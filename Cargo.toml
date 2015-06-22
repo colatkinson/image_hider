@@ -6,3 +6,6 @@ authors = ["Colin Atkinson <colin.william.atkinson@gmail.com>"]
 [[bin]]
 name = "image_hider"
 doc = false
+
+[dependencies]
+image = "*"
