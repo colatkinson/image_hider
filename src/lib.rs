@@ -12,13 +12,10 @@ pub fn encode_file(in_file: &str, out_file: &str) {
     let result = file.read_to_end(&mut buf).unwrap() as u32;
     let size = ((result as f64) / 4.0 + 1.0).sqrt().ceil() as u32;
 
-    buf.insert(0, ((result & 0xff000000) >> 24) as u8);
-    buf.insert(1, ((result & 0x00ff0000) >> 16) as u8);
-    buf.insert(2, ((result & 0x0000ff00) >>  8) as u8);
-    buf.insert(3, ((result & 0x000000ff)      ) as u8);
-
-    //println!("buf: {:?}", buf);
-    //println!("{}", result & 0x000000ff);
+    buf.insert(0, ((result >> 24) & 0xFF) as u8);
+    buf.insert(1, ((result >> 16) & 0xFF) as u8);
+    buf.insert(2, ((result >>  8) & 0xFF) as u8);
+    buf.insert(3, ((result >>  0) & 0xFF) as u8);
 
     println!("{:?}", (size.pow(2) * 4 - (buf.len() as u32)).to_string().as_bytes());
 
@@ -44,21 +41,10 @@ pub fn decode_file(in_file: &str, out_file: &str) {
         }
     }
 
-    println!("{:?}", buf);
-
-    /*let size: u32 =   (((buf[0] as u32) << 24) | 0xffffff00)
-                    + (((buf[1] as u32) << 16) | 0xffff00ff)
-                    + (((buf[2] as u32) <<  8) | 0xff00ffff)
-                    + (((buf[3] as u32)      ) | 0x00ffffff);*/
-    /*let mut size: u32 = 0;
-    size |= ((buf[0]) << 24);
-    size |= ((buf[1]) << 16);
-    size |= ((buf[2]) <<  8);
-    size |= (buf[3]);*/
-
-    let size: usize = (((buf[0] as u32) << 24) | ((buf[1] as u32) << 16) | ((buf[2] as u32) <<  8) | (buf[3] as u32)) as usize;
-
-    //println!("{:0>32b}", ((buf[0] as u32) << 24) + ((buf[1] as u32) << 16) + (buf[2] as u32) <<  8));
+    let size: usize = (((buf[0] as u32) << 24)
+                     | ((buf[1] as u32) << 16)
+                     | ((buf[2] as u32) <<  8)
+                     | ((buf[3] as u32) <<  0) as usize;
 
     println!("{}", size);
 
