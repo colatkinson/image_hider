@@ -6,6 +6,25 @@ use std::path::Path;
 use image::{GenericImage, Pixel};
 use image::png::PNGEncoder;
 
+/// Writes the given byte buffer to a file
+///
+/// # Examples
+///
+/// ```
+/// use image_hider::write_file_bytes;
+/// use std::io::prelude::*;
+/// use std::fs::File;
+///
+/// let _ = write_file_bytes("abcde".as_bytes(), "foo.txt");
+///
+/// let mut f = File::open("foo.txt").unwrap();
+/// let mut s = String::new();
+/// let _ = f.read_to_string(&mut s);
+///
+/// assert_eq!(s,"abcde");
+///
+/// std::fs::remove_file("foo.txt");
+/// ```
 pub fn write_file_bytes(buf: &[u8], out_file: &str) -> std::io::Result<()> {
     let mut file = try!(File::create(&Path::new(out_file)));
     try!(file.write_all(buf));

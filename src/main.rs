@@ -7,14 +7,6 @@ use std::env;
 use std::io::prelude::*;
 
 fn main() {
-    /*println!("Encoding file");
-    let res = image_hider::encode_file(&image_hider::read_bytes("contact.mp3").unwrap()).unwrap();
-    image_hider::write_bytes(&res, "output2.png").unwrap();
-
-    println!("Decoding file");
-    let res = image_hider::decode_file(&image_hider::read_bytes("output2.png").unwrap()).unwrap();
-    image_hider::write_bytes(&res, "contact2.mp3").unwrap();*/
-
     let args: Vec<String> = env::args().collect();
     let program = args[0].clone();
 
@@ -67,16 +59,10 @@ fn main() {
 
     let mut bytes: Vec<u8> = Vec::new();
 
-    /*let bytes = if in_file == "-" {
-        std::io::stdin().read_
-        &image_hider::read_file_bytes(&in_file).unwrap()
-    }*/
-
     if in_file == "stdin" {
         std::io::stdin().read_to_end(&mut bytes).unwrap();
     } else {
         let res = image_hider::read_file_bytes(&in_file);
-        //bytes = image_hider::read_file_bytes(&in_file).unwrap();
         match res {
             Ok(v) => {
                 bytes = v;
