@@ -17,6 +17,8 @@ fn main() {
     let args: Vec<String> = env::args().collect();
     let program = args[0].clone();
 
+    println!("{:?}", args);
+
     let mut opts = Options::new();
     opts.optopt("o", "", "set output file name", "NAME");
     opts.optflag("", "enc", "Encode the given file");
@@ -62,10 +64,10 @@ fn main() {
     println!("{}", out_file);
 
     if enc_mode {
-        let res = image_hider::encode_file(&image_hider::read_bytes(&in_file).unwrap()).unwrap();
-        image_hider::write_bytes(&res, &out_file).unwrap();
+        let res = image_hider::encode_bytes(&image_hider::read_file_bytes(&in_file).unwrap()).unwrap();
+        image_hider::write_file_bytes(&res, &out_file).unwrap();
     } else {
-        let res = image_hider::decode_file(&image_hider::read_bytes(&in_file).unwrap()).unwrap();
-        image_hider::write_bytes(&res, &out_file).unwrap();
+        let res = image_hider::decode_bytes(&image_hider::read_file_bytes(&in_file).unwrap()).unwrap();
+        image_hider::write_file_bytes(&res, &out_file).unwrap();
     }
 }

@@ -6,14 +6,14 @@ use std::path::Path;
 use image::{GenericImage, Pixel};
 use image::png::PNGEncoder;
 
-pub fn write_bytes(buf: &[u8], out_file: &str) -> std::io::Result<()> {
+pub fn write_file_bytes(buf: &[u8], out_file: &str) -> std::io::Result<()> {
     let mut file = try!(File::create(&Path::new(out_file)));
     try!(file.write_all(buf));
 
     Ok(())
 }
 
-pub fn read_bytes(in_file: &str) -> std::io::Result<(Vec<u8>)> {
+pub fn read_file_bytes(in_file: &str) -> std::io::Result<(Vec<u8>)> {
     let mut buf: Vec<u8> = Vec::new();
 
     let mut file = try!(File::open(&Path::new(in_file)));
@@ -22,7 +22,7 @@ pub fn read_bytes(in_file: &str) -> std::io::Result<(Vec<u8>)> {
     Ok(buf)
 }
 
-pub fn encode_file(in_buf: &[u8]) -> Result<Vec<u8>, image::ImageError> {
+pub fn encode_bytes(in_buf: &[u8]) -> Result<Vec<u8>, image::ImageError> {
     let mut buf: Vec<u8> = in_buf.to_vec();
 
     let len = buf.len() as u32;
@@ -47,7 +47,7 @@ pub fn encode_file(in_buf: &[u8]) -> Result<Vec<u8>, image::ImageError> {
     Ok(out_buf)
 }
 
-pub fn decode_file(in_buf: &[u8]) -> Result<Vec<u8>, image::ImageError> {
+pub fn decode_bytes(in_buf: &[u8]) -> Result<Vec<u8>, image::ImageError> {
     let img = try!(image::load_from_memory_with_format(in_buf, image::ImageFormat::PNG));
 
     let mut buf: Vec<u8> = Vec::new();
