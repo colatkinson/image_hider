@@ -18,8 +18,6 @@ fn main() {
     let args: Vec<String> = env::args().collect();
     let program = args[0].clone();
 
-    println!("{:?}", args);
-
     let mut opts = Options::new();
     opts.optopt("o", "", "set output file name", "NAME");
     opts.optflag("", "enc", "Encode the given file");
@@ -67,8 +65,6 @@ fn main() {
         }
     };
 
-    println!("{}", out_file);
-
     let mut bytes: Vec<u8> = Vec::new();
 
     /*let bytes = if in_file == "-" {
@@ -79,14 +75,28 @@ fn main() {
     if in_file == "stdin" {
         std::io::stdin().read_to_end(&mut bytes).unwrap();
     } else {
-        bytes = image_hider::read_file_bytes(&in_file).unwrap();
+        let res = image_hider::read_file_bytes(&in_file);
+        //bytes = image_hider::read_file_bytes(&in_file).unwrap();
+        match res {
+            Ok(v) => {
+                bytes = v;
+            }
+            Err(e) => {
+                println!("Error reading file: {}", e);
+                return;
+            }
+        }
     }
 
     if enc_mode {
-        let res = image_hider::encode_bytes(&bytes).unwrap();
-        image_hider::write_file_bytes(&res, &out_file).unwrap();
+        let res = image_hider::encode_bytes(&bytes).ok()
+                                                   .expect("Error encoding image");
+        image_hider::write_file_bytes(&res, &out_file).ok()
+                                                      .expect("Error writing image to file");
     } else {
-        let res = image_hider::decode_bytes(&bytes).unwrap();
-        image_hider::write_file_bytes(&res, &out_file).unwrap();
+        let res = image_hider::decode_bytes(&bytes).ok()
+                                                   .expect("Error decoding image");
+        image_hider::write_file_bytes(&res, &out_file).ok()
+                                                      .expect("Error writing file");
     }
 }
