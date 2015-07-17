@@ -4,6 +4,7 @@ extern crate getopts;
 use std::path::Path;
 use getopts::Options;
 use std::env;
+use std::io::prelude::*;
 
 fn main() {
     /*println!("Encoding file");
@@ -39,7 +40,12 @@ fn main() {
     };
 
     let in_file = if !matches.free.is_empty() {
-        matches.free[0].clone()
+        let z = matches.free[0].clone();
+        if z == "-" {
+            "stdin".to_string()
+        } else {
+            z
+        }
     } else {
         println!("You need to give a file name, dingus");
         return;
@@ -63,11 +69,24 @@ fn main() {
 
     println!("{}", out_file);
 
+    let mut bytes: Vec<u8> = Vec::new();
+
+    /*let bytes = if in_file == "-" {
+        std::io::stdin().read_
+        &image_hider::read_file_bytes(&in_file).unwrap()
+    }*/
+
+    if in_file == "stdin" {
+        std::io::stdin().read_to_end(&mut bytes).unwrap();
+    } else {
+        bytes = image_hider::read_file_bytes(&in_file).unwrap();
+    }
+
     if enc_mode {
-        let res = image_hider::encode_bytes(&image_hider::read_file_bytes(&in_file).unwrap()).unwrap();
+        let res = image_hider::encode_bytes(&bytes).unwrap();
         image_hider::write_file_bytes(&res, &out_file).unwrap();
     } else {
-        let res = image_hider::decode_bytes(&image_hider::read_file_bytes(&in_file).unwrap()).unwrap();
+        let res = image_hider::decode_bytes(&bytes).unwrap();
         image_hider::write_file_bytes(&res, &out_file).unwrap();
     }
 }
