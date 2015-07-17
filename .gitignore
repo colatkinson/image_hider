@@ -1,4 +1,3 @@
-target
-*.txt
-*.png
-*.mkv
+target/
+out/
+test_files/
