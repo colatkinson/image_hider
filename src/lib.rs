@@ -1,3 +1,18 @@
+//! This module contains methods that allow the encoding of a byte stream to and from a PNG
+//!
+//! # Examples
+//!
+//! ```
+//! use image_hider;
+//! let enc = image_hider::encode_bytes("abcde".as_bytes()).unwrap();
+//! let _ = image_hider::write_file_bytes(&enc, "test.png");
+//!
+//! let read = image_hider::read_file_bytes("test.png").unwrap();
+//! let dec = image_hider::decode_bytes(&read).unwrap();
+//! assert_eq!(dec, "abcde".to_string().into_bytes());
+//! std::fs::remove_file("test.png");
+//! ```
+
 extern crate image;
 
 use std::io::prelude::*;
@@ -10,20 +25,10 @@ use image::png::PNGEncoder;
 ///
 /// # Examples
 ///
-/// ```
+/// ```no_run
 /// use image_hider::write_file_bytes;
-/// use std::io::prelude::*;
-/// use std::fs::File;
 ///
 /// let _ = write_file_bytes("abcde".as_bytes(), "foo.txt");
-///
-/// let mut f = File::open("foo.txt").unwrap();
-/// let mut s = String::new();
-/// let _ = f.read_to_string(&mut s);
-///
-/// assert_eq!(s,"abcde");
-///
-/// std::fs::remove_file("foo.txt");
 /// ```
 pub fn write_file_bytes(buf: &[u8], out_file: &str) -> std::io::Result<()> {
     let mut file = try!(File::create(&Path::new(out_file)));
@@ -32,6 +37,15 @@ pub fn write_file_bytes(buf: &[u8], out_file: &str) -> std::io::Result<()> {
     Ok(())
 }
 
+/// Reads the given file into a byte vector
+///
+/// # Examples
+///
+/// ```no_run
+/// use image_hider::read_file_bytes;
+///
+/// let bytes = read_file_bytes("foo.txt").unwrap();
+/// ```
 pub fn read_file_bytes(in_file: &str) -> std::io::Result<(Vec<u8>)> {
     let mut buf: Vec<u8> = Vec::new();
 
@@ -41,6 +55,17 @@ pub fn read_file_bytes(in_file: &str) -> std::io::Result<(Vec<u8>)> {
     Ok(buf)
 }
 
+/// Encodes a byte array into a PNG image and returns a byte vector of its data
+///
+/// The image is RGBA, and so each pixel contains 4 bytes of data.
+///
+/// # Examples
+///
+/// ```no_run
+/// use image_hider::encode_bytes;
+///
+/// let bytes = encode_bytes("abcde".as_bytes()).unwrap();
+/// ```
 pub fn encode_bytes(in_buf: &[u8]) -> Result<Vec<u8>, image::ImageError> {
     let mut buf: Vec<u8> = in_buf.to_vec();
 
@@ -66,6 +91,18 @@ pub fn encode_bytes(in_buf: &[u8]) -> Result<Vec<u8>, image::ImageError> {
     Ok(out_buf)
 }
 
+/// Decodes file data from a PNG image and returns it as a byte vector
+///
+/// The image is RGBA, and so each pixel contains 4 bytes of data.
+///
+/// # Examples
+///
+/// ```no_run
+/// use image_hider::{decode_bytes, read_file_bytes};
+///
+/// let png = read_file_bytes("foo.png").unwrap();
+/// let bytes = decode_bytes(&png).unwrap();
+/// ```
 pub fn decode_bytes(in_buf: &[u8]) -> Result<Vec<u8>, image::ImageError> {
     let img = try!(image::load_from_memory_with_format(in_buf, image::ImageFormat::PNG));
 
