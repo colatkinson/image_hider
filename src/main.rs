@@ -6,19 +6,32 @@ use getopts::Options;
 use std::env;
 use std::io::prelude::*;
 
+fn print_usage(program: &str, opts: Options) {
+    let brief = format!("Usage: {} (--enc|--dec) [options] <file>", program);
+    print!("{}", opts.usage(&brief));
+    println!("");
+    println!("If a value of - is given for <file>, then the program will accept data from stdin");
+}
+
 fn main() {
     let args: Vec<String> = env::args().collect();
     let program = args[0].clone();
 
     let mut opts = Options::new();
-    opts.optopt("o", "", "set output file name", "NAME");
+    opts.optopt("o", "", "Set output file name [default: <file>.png]", "<name>");
     opts.optflag("", "enc", "Encode the given file");
     opts.optflag("", "dec", "Decode the given file");
+    opts.optflag("h", "help", "Print this help menu");
 
     let matches = match opts.parse(&args[1..]) {
         Ok(m) => { m }
         Err(f) => { panic!(f.to_string()) }
     };
+
+    if matches.opt_present("h") {
+        print_usage(&program, opts);
+        return;
+    }
 
     let enc_mode = if matches.opt_present("enc") {
         true
