@@ -1,6 +1,6 @@
 [package]
 name = "image_hider"
-version = "0.1.0"
+version = "1.0.0"
 authors = ["Colin Atkinson <colin.william.atkinson@gmail.com>"]
 
 [[bin]]
@@ -9,4 +9,4 @@ doc = false
 
 [dependencies]
 image = "*"
-getopts = "0.2"
+getopts = "*"
